@@ -10,7 +10,7 @@ const multer = require('multer');
 
 const app = express();
 const CONFIGS_DIR = path.join(__dirname, 'configs');
-const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1268594897934352404/CPstA83T43tbGjLfjcK5TcY6yt5F0tDqRFcxr5x2W8yx6OnK6w_9JAgtL2Qfjxg9ZGfB';
+const DISCORD_WEBHOOK_URL = 'webhook';
 
 const DISCORD_CLIENT_ID = '123';
 const DISCORD_CLIENT_SECRET = 'asdsa';
