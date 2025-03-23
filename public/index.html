@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Config</title>
+    <style>
+        body {
+            font-family: "Courier New", monospace;
+            background-color: #121212;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            animation: fadeIn 1s ease-in-out;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        form, #login-container, #config-archive, #config-details {
+            background: #1E1E1E;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            animation: slideIn 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        input[type="text"], input[type="number"], input[type="file"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-family: "Courier New", monospace;
+            background-color: #2C2C2C;
+            color: #FFFFFF;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-family: "Courier New", monospace;
+            background-color: #2C2C2C;
+            color: #FFFFFF;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+        }
+
+        #response {
+            margin-top: 20px;
+            font-size: 16px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        #login-btn {
+            background-color: #7289DA;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        #login-btn:hover {
+            background-color: #5b6eae;
+            box-shadow: 0 0 8px rgba(114, 137, 218, 0.8);
+        }
+
+        #config-archive ul {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+        }
+
+        #config-archive li {
+            margin: 10px 0;
+            cursor: pointer;
+            color: #4CAF50;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 4px;
+        }
+
+        #config-archive li:hover {
+            color: #76FF03;
+            text-shadow: 0 0 8px rgba(118, 255, 3, 0.8);
+        }
+
+        #config-details pre {
+            background: #2C2C2C;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+            border: 1px solid #333;
+        }
+
+        #config-details button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        #config-details button:hover {
+            background-color: #45a049;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Config</h1>
+
+    <div id="login-container">
+        <button id="login-btn">Login with Discord</button>
+    </div>
+
+    <form id="configForm" action="/upload-web" method="post" enctype="multipart/form-data" style="display: none;">
+        <label for="gameName">Game Name:</label>
+        <input type="text" id="gameName" name="gameName" required>
+
+        <label for="ping">Ping:</label>
+        <input type="number" id="ping" name="ping" required>
+
+        <label for="configFile" class="custom-file-upload">
+            Choose Config File (CFG)
+            <input type="file" id="configFile" name="configFile" accept=".cfg" required>
+        </label>
+
+        <input type="submit" value="Upload Config">
+    </form>
+
+    <div id="response"></div>
+
+    <div id="config-archive" style="display: none;">
+        <h2>Config Archive</h2>
+        <ul id="config-list"></ul>
+    </div>
+
+    <div id="config-details" style="display: none;">
+        <h2>Config Details</h2>
+        <div><strong>Config Code:</strong> <span id="config-code"></span></div>
+        <div><strong>Game Name:</strong> <span id="game-name"></span></div>
+        <div><strong>Ping:</strong> <span id="ping"></span></div>
+        <div><strong>Uploaded By:</strong> <span id="discord-user-id"></span></div>
+        <button onclick="revealConfig()">Reveal Config Source</button>
+        <pre id="config-json" style="display: none;"></pre>
+        <button onclick="showArchive()">Back to Archive</button>
+    </div>
+
+    <script>
+        document.querySelector('.custom-file-upload').addEventListener('click', function() {
+            document.getElementById('configFile').click();
+        });
+
+        fetch('/session')
+            .then(response => response.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    document.getElementById('login-container').style.display = 'none';
+                    document.getElementById('configForm').style.display = 'block';
+                    loadConfigArchive();
+                }
+            });
+
+        document.getElementById('login-btn').addEventListener('click', function() {
+            window.location.href = '/login';
+        });
+
+        function loadConfigArchive() {
+            fetch('/configs')
+                .then(response => response.json())
+                .then(data => {
+                    const configList = document.getElementById('config-list');
+                    configList.innerHTML = '';
+                    data.forEach(config => {
+                        const li = document.createElement('li');
+                        li.textContent = `Game: ${config.gameName}, Ping: ${config.ping}`;
+                        li.addEventListener('click', () => showConfigDetails(config.configCode));
+                        configList.appendChild(li);
+                    });
+                    document.getElementById('config-archive').style.display = 'block';
+                });
+        }
+
+        function showConfigDetails(configCode) {
+            fetch(`/config/${configCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('config-code').textContent = configCode;
+                    document.getElementById('game-name').textContent = data.gameName;
+                    document.getElementById('ping').textContent = data.ping;
+                    document.getElementById('discord-user-id').textContent = data.discordUserId || 'null';
+                    document.getElementById('config-json').textContent = data.configSource;
+                    document.getElementById('config-archive').style.display = 'none';
+                    document.getElementById('config-details').style.display = 'block';
+                });
+        }
+
+        function revealConfig() {
+            document.getElementById('config-json').style.display = 'block';
+        }
+
+        function showArchive() {
+            document.getElementById('config-details').style.display = 'none';
+            document.getElementById('config-archive').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
